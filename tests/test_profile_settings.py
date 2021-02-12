@@ -1,0 +1,305 @@
+import pytest
+
+from pages.main_page import OkSetting
+
+
+# Тут должна быть парамеризация по пример ниже, но у меня нет учетных записей кроме этой.
+# Недостающие параметры это максмиальная и минимальная длина имени
+def test_change_name(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.input_field(field="Логин", value="+79303077234")
+    page.input_field(field="Пароль", value="test3434#A")
+    page.press_button(button_name="Войти в Одноклассники")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.compare_text(text="Имя", element_type="Заголовок", locator_name="Имя")
+    page.compare_text(text="Фамилия", element_type="Заголовок", locator_name="Фамилия")
+    page.compare_text(text="Дата рождения", element_type="Заголовок", locator_name="Дата рождения")
+    page.compare_text(text="Пол", element_type="Заголовок", locator_name="Пол")
+    page.compare_text(text="Город проживания", element_type="Заголовок", locator_name="Город проживания")
+    page.compare_text(text="Родной город", element_type="Заголовок", locator_name="Родной город")
+    page.clear_text_field(field_name="Имя")
+    page.input_field(field="Имя", value="Тест")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Имя", value="Тест", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Имя", value="Тест", location="Личные данные")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Имя")
+    page.input_field(field="Имя", value="Тест1")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Имя", value="Тест1", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Имя", value="Тест1", location="Личные данные")
+
+
+def test_change_surname(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Фамилия")
+    page.input_field(field="Фамилия", value="Тестовый")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Фамилия", value="Тестовый", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Фамилия", value="Тестовый", location="Личные данные")
+
+    # Эта часть кода закомментирована из-за ограничений системы на количество смен имен
+    # ... и отсутствия у меня других номеров для создания тестовых пользователей :-)
+
+    # page.press_button(button_name="Редактировать личные данные")
+    # page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    # page.clear_text_field(field_name="Фамилия")
+    # page.input_field(field="Фамилия", value="Тестовый1")
+    # page.press_button(button_name="Сохранить")
+    # page.go_to_site()
+    # page.verification_personal_data(variable="Фамилия", value="Тестовый1", location="Имя и фамилия на главной")
+    # page.press_button(button_name="Мои настройки")
+    # page.element_visibility(element_name="Основное", element_type="Заголовок")
+    # page.verification_personal_data(variable="Фамилия", value="Тестовый1", location="Личные данные")
+
+
+@pytest.mark.parametrize("value", ["1", "15", "28"])
+def test_day_birthday(browser, value):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.drop_drown_select(value=value, field_name="День рождения")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="День рождения", value=value, location="Личные данные")
+
+
+@pytest.mark.parametrize("value", ["1", "6", "12"])
+def test_month_birthday(browser, value):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.drop_drown_select(value=value, field_name="Месяц рождения")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="Месяц рождения", value=value, location="Личные данные")
+
+
+@pytest.mark.parametrize("value", ["2005", "1911", "1960"])
+def test_year_birthday(browser, value):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.drop_drown_select(value=value, field_name="Год рождения")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="Год рождения", value=value, location="Личные данные")
+
+
+@pytest.mark.parametrize("city", ["Москва", "Санкт-Петербург"])
+def test_city_residence(browser, city):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Город проживания")
+    page.update_drop_down_select(value=city, field="Город проживания")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="Город проживания", value=city, location="Личные данные")
+
+
+@pytest.mark.parametrize("city", ["Переяслав-Хмельницкий", "Елец"])
+def test_city_birth(browser, city):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Родной город")
+    page.update_drop_down_select(value=city, field="Родной город")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="Родной город", value=city, location="Личные данные")
+
+
+@pytest.mark.parametrize("gender", ["Пол мужской", "Пол женский"])
+def test_gender_radiobutton(browser, gender):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.checked_radiobutton(radiobutton_name=gender)
+    page.status_radiobutton(radiobutton_name=gender)
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.verification_personal_data(variable="Признак пола", value=gender, location="Личные данные")
+
+
+def test_empty_field_name(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Имя")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на пустое поле Имя", element_type="Ошибка")
+    page.compare_text(text="Пожалуйста, укажите ваше имя.", element_type="Ошибка",
+                      locator_name="Ошибка на пустое поле Имя")
+
+
+def test_empty_field_surname(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Фамилия")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на пустое поле Фамилия", element_type="Ошибка")
+    page.compare_text(text="Пожалуйста, укажите вашу фамилию.", element_type="Ошибка",
+                      locator_name="Ошибка на пустое поле Фамилия")
+
+
+def test_empty_city_residence(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Город проживания")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на пустое поле Город проживания", element_type="Ошибка")
+    page.compare_text(text="Пожалуйста, выберите место проживания из списка", element_type="Ошибка",
+                      locator_name="Ошибка на пустое поле Город проживания")
+
+
+def test_empty_city_birth(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Родной город")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ваши настройки сохранены", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.update_drop_down_select(value="Елец", field="Родной город")
+    page.press_button(button_name="Сохранить")
+
+
+@pytest.mark.parametrize("select", ["День рождения", "Месяц рождения", "Год рождения"])
+def test_empty_birthday(browser, select):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.drop_drown_select(value="", field_name=select)
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на не выбранный День рождения", element_type="Ошибка")
+    page.compare_text(text="День вашего рождения указан некорректно.", element_type="Ошибка",
+                      locator_name="Ошибка на не выбранный День рождения")
+
+
+def test_change_name_often(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.compare_text(text="Имя", element_type="Заголовок", locator_name="Имя")
+    page.compare_text(text="Фамилия", element_type="Заголовок", locator_name="Фамилия")
+    page.compare_text(text="Дата рождения", element_type="Заголовок", locator_name="Дата рождения")
+    page.compare_text(text="Пол", element_type="Заголовок", locator_name="Пол")
+    page.compare_text(text="Город проживания", element_type="Заголовок", locator_name="Город проживания")
+    page.compare_text(text="Родной город", element_type="Заголовок", locator_name="Родной город")
+    page.clear_text_field(field_name="Имя")
+    page.input_field(field="Имя", value="Тест")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Имя", value="Тест", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Имя", value="Тест", location="Личные данные")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Имя")
+    page.input_field(field="Имя", value="Тест1")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Имя", value="Тест1", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Имя", value="Тест1", location="Личные данные")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.clear_text_field(field_name="Имя")
+    page.input_field(field="Имя", value="Тест2")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на частую смену имени", element_type="Ошибка")
+    page.compare_text(text="Увы, часто менять имя в ОК нельзя. Попробуйте, пожалуйста, через сутки.",
+                      element_type="Ошибка", locator_name="Ошибка на частую смену имени")
+
+
+def test_change_surname_often(browser):
+    page = OkSetting(browser)
+    page.go_to_site()
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+    page.compare_text(text="Имя", element_type="Заголовок", locator_name="Имя")
+    page.compare_text(text="Фамилия", element_type="Заголовок", locator_name="Фамилия")
+    page.compare_text(text="Дата рождения", element_type="Заголовок", locator_name="Дата рождения")
+    page.compare_text(text="Пол", element_type="Заголовок", locator_name="Пол")
+    page.compare_text(text="Город проживания", element_type="Заголовок", locator_name="Город проживания")
+    page.compare_text(text="Родной город", element_type="Заголовок", locator_name="Родной город")
+    page.clear_text_field(field_name="Фамилия")
+    page.input_field(field="Фамилия", value="Тестовый")
+    page.press_button(button_name="Сохранить")
+    page.go_to_site()
+    page.verification_personal_data(variable="Фамилия", value="Тестовый", location="Имя и фамилия на главной")
+    page.press_button(button_name="Мои настройки")
+    page.element_visibility(element_name="Основное", element_type="Заголовок")
+    page.verification_personal_data(variable="Фамилия", value="Тестовый", location="Личные данные")
+    page.press_button(button_name="Редактировать личные данные")
+    page.element_visibility(element_name="Изменить личные данные", element_type="Заголовок")
+
+    page.clear_text_field(field_name="Фамилия")
+    page.input_field(field="Фамилия", value="Тестовый2")
+    page.press_button(button_name="Сохранить")
+    page.element_visibility(element_name="Ошибка на частую смену имени", element_type="Ошибка")
+    page.compare_text(text="Увы, часто менять имя в ОК нельзя. Попробуйте, пожалуйста, через сутки.",
+                      element_type="Ошибка", locator_name="Ошибка на частую смену имени")
